@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-import "./ComposeEmail.css";
-
-const ComposeEmail = () => {
+const UpdateModal = ({ setShowModal, mailData }) => {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState([]);
   const [tempTo, setTempTo] = useState("");
@@ -12,10 +10,14 @@ const ComposeEmail = () => {
   const [date, setDate] = useState("");
 
   useEffect(() => {
-    console.log(to);
-  }, [to]);
+    setFrom(mailData.from);
+    setTo(mailData.to);
+    setSubject(mailData.subject);
+    setContent(mailData.content);
+    setDate(mailData.date);
+  }, [mailData]);
 
-  const composeScheduledMail = async (e) => {
+  const reScheduledMail = async (e) => {
     e.preventDefault();
     const config = {
       headers: {
@@ -24,28 +26,31 @@ const ComposeEmail = () => {
       },
     };
     console.log(from, to, subject, content);
-    const { data } = await axios.post(
-      "http://localhost:5000/api/v1/mail/schedule",
+    const { data } = await axios.patch(
+      "http://localhost:5000/api/v1/mail/reSchedule",
       {
         date: new Date(date),
         from: from,
         to: to,
         subject: subject,
         content: content,
+        mailId: mailData._id,
       },
       config
     );
 
     console.log(data);
   };
-
-  const del = async (email, index, e) => {
-    e.preventDefault();
-    console.log(email, index);
-    setTo(to.filter((x) => x !== email));
-  };
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: "red",
+        alignItems: "center",
+      }}
+    >
+      <button onClick={() => setShowModal(false)}>close</button>
       <div className="compose-form">
         <label>
           From:
@@ -63,8 +68,8 @@ const ComposeEmail = () => {
               <button
                 key={index}
                 onClick={(e) => {
-                  //   e.preventDefault;
-                  del(email, index, e);
+                  e.preventDefault();
+                  setTo(to.filter((x) => x !== email));
                 }}
               >
                 {email}
@@ -110,15 +115,16 @@ const ComposeEmail = () => {
           <input
             type="datetime-local"
             name="date"
+            min={new Date()}
             value={date}
             onChange={(e) => setDate(e.target.value)}
           />
         </label>
 
-        <button onClick={composeScheduledMail}>submit</button>
+        <button onClick={reScheduledMail}>submit</button>
       </div>
     </div>
   );
 };
 
-export default ComposeEmail;
+export default UpdateModal;
