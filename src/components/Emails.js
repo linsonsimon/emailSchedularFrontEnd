@@ -22,16 +22,52 @@ const Emails = () => {
     }
   };
   return (
-    <div>
-      Emails
-      <div style={{ display: "flex", gap: "10px" }}>
+    <div
+      style={{
+        position: "relative",
+        display: "flex",
+        flexDirection: "column",
+        width: "96%",
+        height: "96%",
+        rowGap: "5px",
+        backgroundColor: "rgb(242,242,242)",
+      }}
+    >
+      <h2 style={{ padding: "0 5px" }}>Emails</h2>
+
+      <div
+        style={{
+          display: "flex",
+          padding: "0 5px",
+        }}
+      >
         {menuOptions.map((menu, index) => (
-          <button key={index} onClick={() => setOption(index)}>
-            {menu}
-          </button>
+          <div
+            style={{
+              cursor: "pointer",
+              width: `calc(100% / ${menuOptions.length})`,
+              padding: "3px",
+              display: "flex",
+              justifyContent: "space-around",
+              backgroundColor: `${
+                index === option ? "rgb(240,220,240)" : "inherit"
+              }`,
+            }}
+            key={index}
+            onClick={() => setOption(index)}
+          >
+            <p>{menu}</p>
+          </div>
         ))}
       </div>
-      <div>{displayComponent(option)}</div>
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        {displayComponent(option)}
+      </div>
     </div>
   );
 };

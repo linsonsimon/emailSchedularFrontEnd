@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { CANCELLED, COMPLETED, PENDING, FAILED } from "../constants";
 import axios from "axios";
 import UpdateModal from "./UpdateModal";
+import "./Common.css";
 
 const ScheduledEmail = () => {
   const [mails, setMails] = useState([]);
@@ -62,75 +63,93 @@ const ScheduledEmail = () => {
     console.log(data.data.unSentMails);
   };
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
-      <div>
-        <label>
-          Pick a option:
-          <select
-            name="selectedOptions"
-            onChange={(e) => setSelectedOption(e.target.value)}
-          >
-            {options.map((o, index) => (
-              <option key={index} value={o} selected={index == 0 && "selected"}>
-                {o}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <button onClick={fetchmails}>search</button>
-      </div>
-      <div>
-        <table>
-          <tbody>
-            <tr>
-              <th>From</th>
-              <th>To</th>
-              <th>Subject</th>
-              <th>Status</th>
-              <th>del</th>
-            </tr>
-
-            {mails &&
-              mails.map((mail, index) => (
-                <tr key={index}>
-                  <td>{mail?.from}</td>
-                  <td>{mail?.to[0]}</td>
-                  <td>{mail?.subject}</td>
-                  <td>{mail?.status}</td>
-                  <td>
-                    <button
-                      onClick={() => {
-                        setShowModal(true);
-                        setSelectedMail(mail);
-                      }}
-                      disabled={
-                        mail?.status === PENDING || mail.status === CANCELLED
-                          ? false
-                          : true
-                      }
-                    >
-                      Update
-                    </button>
-                    <button
-                      onClick={() => {
-                        deletemails(mail._id);
-                      }}
-                      disabled={mail?.status === PENDING ? false : true}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
+    <>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <div>
+          <label>
+            Pick a option:
+            <select
+              name="selectedOptions"
+              onChange={(e) => setSelectedOption(e.target.value)}
+            >
+              {options.map((o, index) => (
+                <option
+                  key={index}
+                  value={o}
+                  selected={index == 0 && "selected"}
+                >
+                  {o}
+                </option>
               ))}
-          </tbody>
-        </table>
-        {!mails && <h4>no mails</h4>}
-        {showModal && (
-          <UpdateModal setShowModal={setShowModal} mailData={selectedMail} />
-        )}
+            </select>
+          </label>
+
+          <button onClick={fetchmails}>search</button>
+        </div>
+        <div style={{ width: "100%" }}>
+          <table style={{ width: "100%" }}>
+            <tbody>
+              <tr>
+                <th>From</th>
+                <th>To</th>
+                <th>Subject</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+
+              {mails &&
+                mails.map((mail, index) => (
+                  <tr key={index}>
+                    <td>{mail?.from}</td>
+                    <td>{mail?.to[0]}</td>
+                    <td>{mail?.subject}</td>
+                    <td>{mail?.status}</td>
+                    <td
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-around",
+                      }}
+                    >
+                      <button
+                        onClick={() => {
+                          setShowModal(true);
+                          setSelectedMail(mail);
+                        }}
+                        disabled={
+                          mail?.status === PENDING || mail.status === CANCELLED
+                            ? false
+                            : true
+                        }
+                      >
+                        Update
+                      </button>
+                      <button
+                        onClick={() => {
+                          deletemails(mail._id);
+                        }}
+                        disabled={mail?.status === PENDING ? false : true}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+          {mails.length == 0 && <h4>no mails</h4>}
+          {showModal && (
+            <UpdateModal setShowModal={setShowModal} mailData={selectedMail} />
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

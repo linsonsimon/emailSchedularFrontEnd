@@ -3,7 +3,15 @@ import Emails from "../components/Emails";
 
 const HomePage = () => {
   return (
-    <div>
+    <div
+      style={{
+        height: "100vh",
+        width: "100vw",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <Emails />
     </div>
   );

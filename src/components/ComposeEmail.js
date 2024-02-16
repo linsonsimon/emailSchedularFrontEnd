@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-import "./ComposeEmail.css";
-
 const ComposeEmail = () => {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState([]);
@@ -45,79 +43,162 @@ const ComposeEmail = () => {
     setTo(to.filter((x) => x !== email));
   };
   return (
-    <div>
-      <div className="compose-form">
-        <label>
-          From:
-          <input
-            type="text"
-            name="from"
-            value={from}
-            onChange={(e) => setFrom(e.target.value)}
-          />
-        </label>
-        <label>
-          To:
-          <div style={{ display: "flex", gap: "10px" }}>
-            {to.map((email, index) => (
-              <button
-                key={index}
-                onClick={(e) => {
-                  //   e.preventDefault;
-                  del(email, index, e);
-                }}
-              >
-                {email}
-              </button>
-            ))}
+    <>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+          width: "100%",
+          //   justifyContent: "space-between",
+          //   margin: "0 5px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            rowGap: "5px",
+            padding: "0 10px",
+          }}
+        >
+          <label
+            style={{
+              padding: "5px 0",
+              gap: "5px",
+            }}
+          >
+            From:
             <input
+              style={{ padding: "0 5px " }}
               type="text"
-              name="to"
-              value={tempTo}
-              onChange={(e) => setTempTo(e.target.value)}
-              onBlur={() => {
-                tempTo.trim() !== "" && setTo((prev) => [...prev, tempTo]);
-                setTempTo("");
+              name="from"
+              value={from}
+              onChange={(e) => setFrom(e.target.value)}
+            />
+          </label>
+          <label
+            style={{
+              borderWidth: "0.5px 0 0 0",
+              borderStyle: "solid",
+              padding: "5px 0",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "2px 5px",
               }}
-              onKeyPress={(e) => {
-                if (e.key == "Enter") {
+            >
+              To:
+              {to.map((email, index) => (
+                <p style={{ boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px" }}>
+                  {email + "  "}
+
+                  <button
+                    key={index}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setTo(to.filter((x) => x !== email));
+                    }}
+                    style={{
+                      height: "90%",
+                      borderRadius: "40%",
+                      borderWidth: 0,
+                    }}
+                  >
+                    X
+                  </button>
+                </p>
+              ))}
+              <input
+                type="text"
+                name="to"
+                value={tempTo}
+                onChange={(e) => setTempTo(e.target.value)}
+                onBlur={() => {
                   tempTo.trim() !== "" && setTo((prev) => [...prev, tempTo]);
                   setTempTo("");
-                }
-              }}
+                }}
+                onKeyPress={(e) => {
+                  if (e.key == "Enter") {
+                    tempTo.trim() !== "" && setTo((prev) => [...prev, tempTo]);
+                    setTempTo("");
+                  }
+                }}
+                style={{ borderWidth: 0 }}
+              />
+            </div>
+          </label>
+          <label
+            style={{
+              borderWidth: "0.5px 0 0 0",
+              borderStyle: "solid",
+              padding: "5px 0",
+            }}
+          >
+            Subject:
+            <input
+              type="text"
+              name="subject"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
             />
-          </div>
-        </label>
-        <label>
-          Subject:
-          <input
-            type="text"
-            name="subject"
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-          />
-        </label>
-        <label>
-          Content:
+          </label>
+          <label
+            style={{
+              borderWidth: "0.5px 0 0 0",
+              borderStyle: "solid",
+              padding: "5px 0",
+            }}
+          >
+            date:
+            <input
+              type="datetime-local"
+              name="date"
+              min={new Date()}
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+          </label>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+            width: "98%",
+            alignItems: "center",
+            alignSelf: "center",
+          }}
+        >
           <textarea
             value={content}
+            placeholder="content"
             onChange={(e) => setContent(e.target.value)}
+            style={{
+              height: "90%",
+              width: "100%",
+              borderWidth: 0,
+              resize: "none",
+            }}
           />
-        </label>
-
-        <label>
-          date:
-          <input
-            type="datetime-local"
-            name="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
-        </label>
-
-        <button onClick={composeScheduledMail}>submit</button>
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              gap: "10px",
+              justifyContent: "flex-start",
+            }}
+          >
+            <button>attach</button>
+            <button onClick={composeScheduledMail}>submit</button>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
