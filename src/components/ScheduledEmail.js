@@ -104,6 +104,11 @@ const ScheduledEmail = () => {
                         setShowModal(true);
                         setSelectedMail(mail);
                       }}
+                      disabled={
+                        mail?.status === PENDING || mail.status === CANCELLED
+                          ? false
+                          : true
+                      }
                     >
                       Update
                     </button>
@@ -111,6 +116,7 @@ const ScheduledEmail = () => {
                       onClick={() => {
                         deletemails(mail._id);
                       }}
+                      disabled={mail?.status === PENDING ? false : true}
                     >
                       Delete
                     </button>
