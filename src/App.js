@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import HomePage from "./pages/HomePage";
 
 function App() {
   const [from, setFrom] = useState("");
@@ -18,19 +19,16 @@ function App() {
     const { data } = await axios.post(
       "http://localhost:5000/api/v1/mail",
       {
-        to: to,
-        subject: subject,
-        from: from,
-        text: text,
+        date: new Date(new Date().getTime() + 5000),
       },
       config
     );
 
-    console.log(data);
+    console.log(new Date());
   };
   return (
     <div>
-      <div>
+      {/* <div>
         from :<input value={from} onChange={(e) => setFrom(e.target.value)} />
       </div>
       <div>
@@ -50,7 +48,9 @@ function App() {
         }}
       >
         sendMail
-      </button>
+      </button> */}
+
+      <HomePage />
     </div>
   );
 }
