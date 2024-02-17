@@ -19,27 +19,33 @@ const UpdateModal = ({ setShowModal, mailData }) => {
 
   const reScheduledMail = async (e) => {
     e.preventDefault();
-    const config = {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-      },
-    };
-    console.log(from, to, subject, content);
-    const { data } = await axios.patch(
-      "http://localhost:5000/api/v1/mail/reSchedule",
-      {
-        date: new Date(date),
-        from: from,
-        to: to,
-        subject: subject,
-        content: content,
-        mailId: mailData._id,
-      },
-      config
-    );
+    try {
+      const config = {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+        },
+      };
+      const { data } = await axios.patch(
+        `http://localhost:5000/api/v1/mail/reSchedule/${mailData._id}`,
+        {
+          date: new Date(date),
+          from: from,
+          to: to,
+          subject: subject,
+          content: content,
+          mailId: mailData._id,
+        },
+        config
+      );
 
-    console.log(data);
+      console.log(data);
+      setShowModal(false);
+    } catch (error) {
+      alert(
+        error.response.data.statusCode + " : " + error.response.data.message
+      );
+    }
   };
   return (
     <div
@@ -182,8 +188,26 @@ const UpdateModal = ({ setShowModal, mailData }) => {
               <input
                 type="datetime-local"
                 name="date"
-                min={new Date()}
-                value={date}
+                min={new Date()
+                  .toLocaleString("sv-SE", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                  })
+                  .replace(" ", "T")}
+                value={new Date(date)
+                  .toLocaleString("sv-SE", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                  })
+                  .replace(" ", "T")}
                 onChange={(e) => setDate(e.target.value)}
               />
             </label>

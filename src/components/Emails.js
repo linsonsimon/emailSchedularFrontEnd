@@ -49,9 +49,9 @@ const Emails = () => {
               padding: "3px",
               display: "flex",
               justifyContent: "space-around",
-              backgroundColor: `${
-                index === option ? "rgb(240,220,240)" : "inherit"
-              }`,
+              borderWidth: `${index === option ? "0 0 2px 0" : "0"}`,
+              borderStyle: "solid",
+              borderColor: "gray",
             }}
             key={index}
             onClick={() => setOption(index)}

@@ -9,39 +9,35 @@ const ComposeEmail = () => {
   const [content, setContent] = useState("");
   const [date, setDate] = useState("");
 
-  useEffect(() => {
-    console.log(to);
-  }, [to]);
-
   const composeScheduledMail = async (e) => {
     e.preventDefault();
-    const config = {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-      },
-    };
-    console.log(from, to, subject, content);
-    const { data } = await axios.post(
-      "http://localhost:5000/api/v1/mail/schedule",
-      {
-        date: new Date(date),
-        from: from,
-        to: to,
-        subject: subject,
-        content: content,
-      },
-      config
-    );
+    try {
+      const config = {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+        },
+      };
+      const { data } = await axios.post(
+        "http://localhost:5000/api/v1/mail/schedule",
+        {
+          date: new Date(date),
+          from: from,
+          to: to,
+          subject: subject,
+          content: content,
+        },
+        config
+      );
 
-    console.log(data);
+      console.log("mail Composed", data);
+    } catch (error) {
+      alert(
+        error.response.data.statusCode + " : " + error.response.data.message
+      );
+    }
   };
 
-  const del = async (email, index, e) => {
-    e.preventDefault();
-    console.log(email, index);
-    setTo(to.filter((x) => x !== email));
-  };
   return (
     <>
       <div
@@ -50,8 +46,6 @@ const ComposeEmail = () => {
           flexDirection: "column",
           height: "100%",
           width: "100%",
-          //   justifyContent: "space-between",
-          //   margin: "0 5px",
         }}
       >
         <div
@@ -93,19 +87,21 @@ const ComposeEmail = () => {
             >
               To:
               {to.map((email, index) => (
-                <p style={{ boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px" }}>
+                <p
+                  key={index}
+                  style={{ boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px" }}
+                >
                   {email + "  "}
 
                   <button
-                    key={index}
                     onClick={(e) => {
                       e.preventDefault();
                       setTo(to.filter((x) => x !== email));
                     }}
                     style={{
                       height: "90%",
-                      borderRadius: "40%",
-                      borderWidth: 0,
+                      borderRadius: "20%",
+                      borderWidth: 1,
                     }}
                   >
                     X
@@ -157,8 +153,26 @@ const ComposeEmail = () => {
             <input
               type="datetime-local"
               name="date"
-              min={new Date()}
-              value={date}
+              min={new Date()
+                .toLocaleString("sv-SE", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                })
+                .replace(" ", "T")}
+              value={date
+                .toLocaleString("sv-SE", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                })
+                .replace(" ", "T")}
               onChange={(e) => setDate(e.target.value)}
             />
           </label>

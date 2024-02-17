@@ -26,41 +26,48 @@ const ScheduledEmail = () => {
     fetchmails();
   }, []);
 
-  useEffect(() => {
-    console.log(selectedOption);
-  }, [selectedOption]);
-
   const fetchmails = async () => {
-    const config = {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-      },
-    };
-    const { data } = await axios.get(
-      `http://localhost:5000/api/v1/mail/${url[selectedOption]}`,
-      config
-    );
+    try {
+      const config = {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+        },
+      };
+      const { data } = await axios.get(
+        `http://localhost:5000/api/v1/mail/${url[selectedOption]}`,
+        config
+      );
 
-    setMails(data.data[dataType[selectedOption]]);
-    console.log(data.data);
+      setMails(data.data[dataType[selectedOption]]);
+      // console.log(data.data);
+    } catch (error) {
+      alert(
+        error.response.data.statusCode + " : " + error.response.data.message
+      );
+    }
   };
 
   const deletemails = async (mailId) => {
-    const config = {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-      },
-    };
-    const { data } = await axios.patch(
-      "http://localhost:5000/api/v1/mail/delete",
-      { mailId },
-      config
-    );
+    try {
+      const config = {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+        },
+      };
+      const { data } = await axios.patch(
+        `http://localhost:5000/api/v1/mail/delete/${mailId}`,
+        config
+      );
 
-    setMails(data.data.unSentMails);
-    console.log(data.data.unSentMails);
+      console.log(data.data);
+      fetchmails();
+    } catch (error) {
+      alert(
+        error.response.data.statusCode + " : " + error.response.data.message
+      );
+    }
   };
   return (
     <>
@@ -143,7 +150,7 @@ const ScheduledEmail = () => {
                 ))}
             </tbody>
           </table>
-          {mails.length == 0 && <h4>no mails</h4>}
+          {!mails || (mails?.length == 0 && <h4>no mails</h4>)}
           {showModal && (
             <UpdateModal setShowModal={setShowModal} mailData={selectedMail} />
           )}
